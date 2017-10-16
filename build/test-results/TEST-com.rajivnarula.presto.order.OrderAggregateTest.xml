@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.rajivnarula.presto.order.OrderAggregateTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2017-10-16T16:47:41" hostname="RajivNarula.local" time="0.012">
+  <properties/>
+  <testcase name="testOrderCreateCommand" classname="com.rajivnarula.presto.order.OrderAggregateTest" time="0.01"/>
+  <testcase name="testOrderAggragateConstructor" classname="com.rajivnarula.presto.order.OrderAggregateTest" time="0.0"/>
+  <testcase name="testChangeNameCommand" classname="com.rajivnarula.presto.order.OrderAggregateTest" time="0.001"/>
+  <system-out><![CDATA[Apply OrderCreatedEvent>>>>
+12:47:41.321 [Test worker] DEBUG com.rajivnarula.presto.order.OrderAggregateTest - event>>>>>>OrderCreatedEvent [orderId=7f49b84d-0bbc-38e9-a493-718013baace6, name=testName]
+Apply OrderCreatedEvent>>>>
+Apply OrderCreatedEvent>>>>
+Apply OrderChangedEvent>>>>
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,5 @@
+Apply OrderCreatedEvent>>>>
+®12:47:41.321 [Test worker] DEBUG com.rajivnarula.presto.order.OrderAggregateTest - event>>>>>>OrderCreatedEvent [orderId=7f49b84d-0bbc-38e9-a493-718013baace6, name=testName]
+Apply OrderCreatedEvent>>>>
+Apply OrderCreatedEvent>>>>
+Apply OrderChangedEvent>>>>
