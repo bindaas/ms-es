@@ -27,7 +27,7 @@ public class CancelOrderCommand implements Command {
 
 	@Override
 	public String toString() {
-		return "ChangeOrderNameCommand [orderId=" + orderId + ", reason=" + reason + "]";
+		return "CancelOrderCommand [orderId=" + orderId + ", reason=" + reason + "]";
 	}
     
 

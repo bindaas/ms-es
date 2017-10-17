@@ -8,7 +8,6 @@ public class Application {
 	
 	
 	// TODO
-	// Another Command\Event
 	
 	// Projection
 	// Validation across aggregations

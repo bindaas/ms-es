@@ -26,15 +26,15 @@ public class OrderAggregateTest {
 		CreateOrderCommand createOrderCommand = new CreateOrderCommand( orderId,  name);
 		
 		OrderAggregate orderAggregate = new OrderAggregate (createOrderCommand);
-		List <Event> events = orderAggregate.mutatingEvents();
-	    assertEquals(events.size(), 1);
+		List <Event> mutatingEvents = orderAggregate.mutatingEvents();
+	    assertEquals(mutatingEvents.size(), 1);
 	    assertEquals(orderAggregate.getOrderId(), orderId);
 	    assertEquals(orderAggregate.getName(), "testName");
-	    
+	    assertEquals(orderAggregate.getStatus(), OrderStatus.CREATED);
 	    
 		List<Event> expectedEventStream = new ArrayList <Event>();
 		expectedEventStream.add(new OrderCreatedEvent (orderId , "testName"));
-		assertEquals(events, expectedEventStream);
+		assertEquals(mutatingEvents, expectedEventStream);
 	    
 	}
 	
@@ -49,15 +49,15 @@ public class OrderAggregateTest {
 		eventStream.add(orderCreatedEvent);
 		
 		OrderAggregate orderAggregate = new OrderAggregate (orderId,eventStream);
-		List <Event> events = orderAggregate.mutatingEvents();
-	    assertEquals(events.size(), 1);
+		List <Event> mutatingEvents = orderAggregate.mutatingEvents();
+	    assertEquals(mutatingEvents.size(), 1);
 	    assertEquals(orderAggregate.getOrderId(), orderId);
 	    assertEquals(orderAggregate.getName(), "testName");
 	    
 		List<Event> expectedEventStream = new ArrayList <Event>();
 		expectedEventStream.add(new OrderCreatedEvent (orderId , "testName"));
-		assertEquals(events, expectedEventStream);
-	    
+		assertEquals(mutatingEvents, expectedEventStream);
+	    assertEquals(orderAggregate.getStatus(), OrderStatus.CREATED);
 	}
 
 	@Test
@@ -72,21 +72,118 @@ public class OrderAggregateTest {
 		OrderAggregate orderAggregate = new OrderAggregate (orderId,eventStream);
 		
 		ChangeOrderNameCommand changeOrderNameCommand = new ChangeOrderNameCommand( orderId,  "noname");
-		orderAggregate.handle(changeOrderNameCommand);
+		List <Event> newEvents =  orderAggregate.handle(changeOrderNameCommand);
+	    assertEquals(newEvents.size(), 1);
 
-		List <Event> events = orderAggregate.mutatingEvents();
+		List <Event> mutatingEvents = orderAggregate.mutatingEvents();
 		
 		List<Event> expectedEventStream = new ArrayList <Event>();
 		expectedEventStream.add(new OrderCreatedEvent (orderId , "testName"));
 		expectedEventStream.add(new OrderChangedEvent (orderId , "noname"));
 
-		assertEquals(events, expectedEventStream);
+		assertEquals(mutatingEvents, expectedEventStream);
 		
-	    assertEquals(events.size(), 2);
+	    assertEquals(mutatingEvents.size(), 2);
 	    assertEquals(orderAggregate.getOrderId(), orderId);
 	    assertEquals(orderAggregate.getName(), "noname");
 	}
 	
+	@Test
+	public void testCancelOrderCommand() {
+		String name = "testName" ;
+		byte[] nbyte = {10,20,30};
+	       
+		UUID orderId = UUID.nameUUIDFromBytes(nbyte); 
+		CreateOrderCommand createOrderCommand = new CreateOrderCommand( orderId,  name);
+		
+		OrderAggregate orderAggregate = new OrderAggregate (createOrderCommand);
+		
+	    assertEquals(orderAggregate.getStatus(), OrderStatus.CREATED);
+	    CancelOrderCommand cancelOrderCommand = new CancelOrderCommand( orderId,  "Test Reason");
+	    List <Event> newEvents =  orderAggregate.handle(cancelOrderCommand);
+	    assertEquals(newEvents.size(), 1);
+	    
+		List <Event> mutatingEvents = orderAggregate.mutatingEvents();
+	    assertEquals(mutatingEvents.size(), 2);
+	    assertEquals(orderAggregate.getStatus(), OrderStatus.CANCELED);
+	    
+		ChangeOrderNameCommand changeOrderNameCommand = new ChangeOrderNameCommand( orderId,  "noname");
+		try {
+			orderAggregate.handle(changeOrderNameCommand);
+			fail ("Should not be called");
+		}catch (Exception ex) {
+			assertTrue (true);
+		}
+		
+		ShipOrderCommand shipOrderCommand = new ShipOrderCommand( orderId);
+		try {
+			orderAggregate.handle(shipOrderCommand);
+			fail ("Should not be called");
+		}catch (Exception ex) {
+			assertTrue (true);
+		}
+	    
+	}
+
 	
+	@Test
+	public void testShipOrderCommand() {
+		String name = "testName" ;
+		byte[] nbyte = {10,20,30};
+	       
+		UUID orderId = UUID.nameUUIDFromBytes(nbyte); 
+		CreateOrderCommand createOrderCommand = new CreateOrderCommand( orderId,  name);
+		
+		OrderAggregate orderAggregate = new OrderAggregate (createOrderCommand);
+		
+	    assertEquals(orderAggregate.getStatus(), OrderStatus.CREATED);
+	    CancelOrderCommand cancelOrderCommand = new CancelOrderCommand( orderId,  "Test Reason");
+	    List <Event> newEvents =  orderAggregate.handle(cancelOrderCommand);
+	    assertEquals(newEvents.size(), 1);
+	    
+		ShipOrderCommand shipOrderCommand = new ShipOrderCommand( orderId);
+		try {
+			orderAggregate.handle(shipOrderCommand);
+			fail ("Should not be called");
+		}catch (Exception ex) {
+			assertTrue (true);
+		}
+	    
+	}
+	
+	@Test
+	public void testAddLineitemCommand() {
+		String name = "testName" ;
+		byte[] nbyte = {10,20,30};
+	       
+		UUID orderId = UUID.nameUUIDFromBytes(nbyte); 
+		CreateOrderCommand createOrderCommand = new CreateOrderCommand( orderId,  name);
+		
+		OrderAggregate orderAggregate = new OrderAggregate (createOrderCommand);
+		assertEquals(orderAggregate.getStatus(), OrderStatus.CREATED);
+	    
+		AddLineItemCommand addLineItemCommand = new AddLineItemCommand( orderId,  "Sugar", 100);
+	    List <Event> newEvents =  orderAggregate.handle(addLineItemCommand);
+	    assertEquals(newEvents.size(), 1);
+		assertEquals(orderAggregate.getStatus(), OrderStatus.INITIALIZED);
+		assertEquals(orderAggregate.getQuantity("Sugar"), new Long(100));
+		
+		addLineItemCommand = new AddLineItemCommand( orderId,  "Sugar", 50);
+		newEvents = orderAggregate.handle(addLineItemCommand);
+	    assertEquals(newEvents.size(), 1);
+		assertEquals(orderAggregate.getStatus(), OrderStatus.INITIALIZED);
+		assertEquals(orderAggregate.getQuantity("Sugar"), new Long(150));
+		
+		
+		ShipOrderCommand shipOrderCommand = new ShipOrderCommand( orderId);
+		try {
+			orderAggregate.handle(shipOrderCommand);
+			assertTrue (true);
+		}catch (Exception ex) {
+			fail ("Should not be called");
+		}
+	    
+		
+	}
 	
 }

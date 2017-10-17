@@ -3,35 +3,30 @@ import java.util.UUID;
 
 import com.rajivnarula.presto.Event;
 
-public class OrderCanceledEvent implements Event{
+
+public class OrderShippedEvent implements Event{
 	
     private final UUID orderId;
-    private final String reason ;
     
-	public OrderCanceledEvent(UUID orderId, String reason) {
+	public OrderShippedEvent(UUID orderId) {
 		super();
 		this.orderId = orderId;
-		this.reason = reason;
 	}
 
 	public UUID getOrderId() {
 		return orderId;
 	}
 
-	public String reason() {
-		return reason;
-	}
 
 	@Override
 	public String toString() {
-		return "OrderCanceledEvent [orderId=" + orderId + ", reason=" + reason + "]";
+		return "OrderShippedEvent [orderId=" + orderId +  "]";
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((reason == null) ? 0 : reason.hashCode());
 		result = prime * result + ((orderId == null) ? 0 : orderId.hashCode());
 		return result;
 	}
@@ -44,12 +39,7 @@ public class OrderCanceledEvent implements Event{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		OrderCanceledEvent other = (OrderCanceledEvent) obj;
-		if (reason == null) {
-			if (other.reason != null)
-				return false;
-		} else if (!reason.equals(other.reason))
-			return false;
+		OrderShippedEvent other = (OrderShippedEvent) obj;
 		if (orderId == null) {
 			if (other.orderId != null)
 				return false;
