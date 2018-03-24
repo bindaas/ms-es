@@ -7,17 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Application {
 	
 	
-	// TODO
-	
-	// Projection
-	// Validation across aggregations
-
-	// Snapshot
-	
-	// Queues
-	// Another MS
-	// Swagger
-
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }

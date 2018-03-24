@@ -7,16 +7,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.rajivnarula.presto.Event;
-import com.rajivnarula.presto.order.command.AddLineItemCommand;
-import com.rajivnarula.presto.order.command.CancelOrderCommand;
 import com.rajivnarula.presto.order.command.ChangeOrderNameCommand;
 import com.rajivnarula.presto.order.command.CreateOrderCommand;
-import com.rajivnarula.presto.order.command.ShipOrderCommand;
-import com.rajivnarula.presto.order.event.LineitemAddedEvent;
-import com.rajivnarula.presto.order.event.OrderCanceledEvent;
 import com.rajivnarula.presto.order.event.OrderChangedEvent;
 import com.rajivnarula.presto.order.event.OrderCreatedEvent;
-import com.rajivnarula.presto.order.event.OrderShippedEvent;
 
 public class OrderAggregate {
 	
@@ -62,6 +56,9 @@ public class OrderAggregate {
 		return name;
 	}
 
+	public int getVersion() {
+		return mutatingEvents.size();
+	}
 
 	private void handle (CreateOrderCommand createOrderCommand) {
 		if (status != OrderStatus.NONE) {
@@ -84,7 +81,7 @@ public class OrderAggregate {
 		return newEvents;
 	}
 
-	public List <Event> handle (CancelOrderCommand cancelOrderCommand) {
+/*	public List <Event> handle (CancelOrderCommand cancelOrderCommand) {
 		if ((status == OrderStatus.NONE)) {
 			throw new RuntimeException ("Invalid command sequence. ");
 		}
@@ -123,19 +120,13 @@ public class OrderAggregate {
 		newEvents.add(itemAddedEvent);
 		return newEvents;
 	}
-	
+*/	
 	
 	private void apply (Event event) {
 		if (event instanceof OrderCreatedEvent) {
 			apply ((OrderCreatedEvent)event);
 		}else if (event instanceof OrderChangedEvent) {
 			apply ((OrderChangedEvent)event);
-		}else if (event instanceof OrderCanceledEvent) {
-			apply ((OrderCanceledEvent)event);
-		}else if (event instanceof OrderShippedEvent) {
-			apply ((OrderShippedEvent)event);
-		}else if (event instanceof LineitemAddedEvent) {
-			apply ((LineitemAddedEvent)event);
 		}else {
 			throw new RuntimeException ("Unexpected event");
 		}
@@ -153,7 +144,7 @@ public class OrderAggregate {
 		System.out.println("Apply OrderChangedEvent>>>>");
 	}
 
-	private void apply (OrderCanceledEvent orderCanceledEvent) {
+/*	private void apply (OrderCanceledEvent orderCanceledEvent) {
 		status = OrderStatus.CANCELED ;
 		reasonForCancelation = orderCanceledEvent.reason();
 		System.out.println("Apply OrderCanceledEvent>>>>");
@@ -179,7 +170,7 @@ public class OrderAggregate {
 		}
 		lineItems.put(sku,quantity) ;
 	}
-	
+*/	
 	public Long getQuantity (String sku) {
 		return lineItems.get(sku) ;
 	}

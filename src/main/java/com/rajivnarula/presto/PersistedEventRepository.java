@@ -8,9 +8,4 @@ public interface PersistedEventRepository extends CrudRepository<PersistedEvent,
 	
     List<PersistedEvent> findByObjectId(String objectId);
 
-
 }
-
-
-
-
