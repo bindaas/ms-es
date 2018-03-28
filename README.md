@@ -7,15 +7,17 @@ java -jar build/libs/gs-rest-service-0.1.0.jar
 
 TODO
 
-Write Some tests
-Create Snapshot- on demand
 Use Snapshots in Aggregate
-More commands and Events
+Order Cancel
+Order un-Cancel
 Another MS
 Cross MS communication
 Projections
-Docker	
+convert GET to POST
+cleanup
+	
 
+Docker
 Swagger
 Create Snapshot periodically
 Validations

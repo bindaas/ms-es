@@ -16,10 +16,10 @@ public class OrderAggregate {
 	
     private UUID orderId;
     private String name ;
-    private final List<Event> mutatingEvents ;
+    transient private final List<Event> mutatingEvents ;
     private OrderStatus status = OrderStatus.NONE;
     private String reasonForCancelation ;
-    private  Map<String, Long> lineItems = new HashMap<String,Long> ();
+    //private  Map<String, Long> lineItems = new HashMap<String,Long> ();
     
 	public OrderAggregate(CreateOrderCommand createOrderCommand) {
 		super();
@@ -170,10 +170,10 @@ public class OrderAggregate {
 		}
 		lineItems.put(sku,quantity) ;
 	}
-*/	
 	public Long getQuantity (String sku) {
 		return lineItems.get(sku) ;
 	}
+*/	
 	
 	private void apply (List<Event> eventStream) {
 	    for (final Event anEvent : eventStream) {

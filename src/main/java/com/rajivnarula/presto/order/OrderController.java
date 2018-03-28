@@ -44,7 +44,7 @@ public class OrderController {
 
     
     @RequestMapping("/changeOrderNameCommand")
-    public String updateOrderCommand(@RequestParam(value="newName", defaultValue="any newName") String newName , @RequestParam(value="orderId", defaultValue="any orderId") String orderId)  throws Exception{
+    public String updateOrderCommand(@RequestParam(value="newName") String newName , @RequestParam(value="orderId", defaultValue="any orderId") String orderId)  throws Exception{
 		System.out.println("updateOrderCommand>>>>");
     		List<PersistedEvent> persistedEvents = persistedEventRepository.findByObjectId(orderId);
     		
@@ -60,7 +60,7 @@ public class OrderController {
     }
     
     @RequestMapping("/orderSnapshot")
-    public String orderSnapshot( @RequestParam(value="orderId", defaultValue="any orderId") String orderId)  throws Exception{
+    public String orderSnapshot( @RequestParam(value="orderId") String orderId)  throws Exception{
 		System.out.println("orderSnapshot>>>>");
     		List<PersistedEvent> persistedEvents = persistedEventRepository.findByObjectId(orderId);
     		
