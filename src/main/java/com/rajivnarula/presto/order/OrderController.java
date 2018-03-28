@@ -61,7 +61,7 @@ public class OrderController {
     
     @RequestMapping("/orderSnapshot")
     public String orderSnapshot( @RequestParam(value="orderId", defaultValue="any orderId") String orderId)  throws Exception{
-		System.out.println("updateOrderCommand>>>>");
+		System.out.println("orderSnapshot>>>>");
     		List<PersistedEvent> persistedEvents = persistedEventRepository.findByObjectId(orderId);
     		
     		List<Event> eventStream  = EventSerializer.deserialize(persistedEvents) ;
@@ -72,6 +72,18 @@ public class OrderController {
     		
         return orderId.toString();
     }
+
+    @RequestMapping("/orderAggregate")
+    public OrderAggregate orderAggregate( @RequestParam(value="orderId") String orderId)  throws Exception{
+		System.out.println("orderAggregate>>>>");
+    		List<PersistedEvent> persistedEvents = persistedEventRepository.findByObjectId(orderId);
+    		
+    		List<Event> eventStream  = EventSerializer.deserialize(persistedEvents) ;
+    		UUID orderUUID = UUID.fromString(orderId);
+    		OrderAggregate orderAggregate = new OrderAggregate (orderUUID,eventStream);
+        return orderAggregate;
+    }
+    
     
     
 }
