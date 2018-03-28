@@ -1,5 +1,10 @@
-// GET
-def get = new URL("http://localhost:8080/createOrderCommand").openConnection();
+import groovy.json.*
+
+// TEST Create Order
+
+def ORDER_NAME = "qwerty"
+
+def get = new URL("http://localhost:8080/createOrderCommand?name="+ORDER_NAME).openConnection();
 def getRC = get.getResponseCode();
 println(getRC);
 def orderId = null 
@@ -16,6 +21,9 @@ if (orderId){
 	if(geOrderAggregatetRC.equals(200)) {
 	    orderAggregate = getOrderAggregate.getInputStream().getText() 
 	    println(orderAggregate);
+	    def jsonSlurper = new JsonSlurper()
+	    def orderAggregateJSON = jsonSlurper.parseText(orderAggregate)
+	    assert ORDER_NAME == orderAggregateJSON.name
 	}
 
 }
