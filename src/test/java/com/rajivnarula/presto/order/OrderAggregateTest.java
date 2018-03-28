@@ -88,7 +88,7 @@ public class OrderAggregateTest {
 	    assertEquals(orderAggregate.getName(), "noname");
 	}
 	
-	@Test
+/*	@Test
 	public void testCancelOrderCommand() {
 		String name = "testName" ;
 		byte[] nbyte = {10,20,30};
@@ -185,5 +185,5 @@ public class OrderAggregateTest {
 	    
 		
 	}
-	
+*/	
 }
