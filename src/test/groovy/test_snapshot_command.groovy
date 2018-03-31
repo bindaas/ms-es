@@ -24,7 +24,7 @@ if(responseCode.equals(200)) {
     println(orderId);
 }
 
-	def getOrderAggregate = new URL("http://localhost:8080/orderAggregate?orderId="+orderId).openConnection();
+	def getOrderAggregate = new URL("http://localhost:8080/orderAggregate?orderId="+orderId+"&snapshot=false").openConnection();
 	responseCode = getOrderAggregate.getResponseCode();
 	println(responseCode);
 	def orderAggregate = null 
@@ -48,7 +48,7 @@ if(responseCode.equals(200)) {
     println(orderId);
 }
 
-	getOrderAggregate = new URL("http://localhost:8080/orderAggregate?orderId="+orderId).openConnection();
+	getOrderAggregate = new URL("http://localhost:8080/orderAggregate?orderId="+orderId+"&snapshot=false").openConnection();
 	responseCode = getOrderAggregate.getResponseCode();
 	println(responseCode);
 	orderAggregate = null 
@@ -68,5 +68,14 @@ if(responseCode.equals(200)) {
     orderId = snapshotCommand.getInputStream().getText() 
     println(orderId);
 }
-	
+
+println ("testing snapshots...")
+def aggregateURI = "http://localhost:8080/orderAggregateSnapshot?orderId="+orderId
+println aggregateURI	
+def getOrderAggregateSnapshot = new URL(aggregateURI).openConnection();
+responseCode = getOrderAggregateSnapshot.getResponseCode();
+orderAggregate = getOrderAggregateSnapshot.getInputStream().getText() 
+println(orderAggregate);
+
+
 	

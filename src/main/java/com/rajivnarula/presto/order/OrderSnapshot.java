@@ -8,6 +8,10 @@ import javax.persistence.Id;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.rajivnarula.presto.Event;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 
 @Entity
 public class OrderSnapshot {
@@ -36,6 +40,12 @@ public class OrderSnapshot {
 		return theSnapshot;
 	}
 
+    public OrderAggregate getOrderAggregate() {
+	    Gson gson = new GsonBuilder().create();
+	    OrderAggregate orderAggregate = (OrderAggregate)gson.fromJson(theSnapshot, OrderAggregate.class);
+    	
+		return orderAggregate;
+	}
 
 	public String getObjectId() {
 		return objectId;

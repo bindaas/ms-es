@@ -11,6 +11,9 @@ import com.rajivnarula.presto.order.command.ChangeOrderNameCommand;
 import com.rajivnarula.presto.order.command.CreateOrderCommand;
 import com.rajivnarula.presto.order.event.OrderChangedEvent;
 import com.rajivnarula.presto.order.event.OrderCreatedEvent;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 
 public class OrderAggregate {
 	
@@ -34,6 +37,10 @@ public class OrderAggregate {
 		this.orderId = orderId ;
 		mutatingEvents = eventStream ;
 		apply (mutatingEvents);
+	}
+
+	public OrderAggregate() {
+		mutatingEvents = new ArrayList<Event> ();
 	}
 
 	public List<Event> mutatingEvents() {
