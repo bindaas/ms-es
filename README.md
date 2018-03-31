@@ -7,11 +7,11 @@ java -jar build/libs/gs-rest-service-0.1.0.jar
 
 TODO
 
-cleanup
 Order Cancel
 Order un-Cancel
 Add more fields to Order
 Convert GET to POST
+cleanup
 
 
 Another MS
