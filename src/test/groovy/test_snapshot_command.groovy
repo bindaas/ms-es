@@ -4,78 +4,82 @@ import groovy.json.*
 
 def ORDER_NAME = "qwerty"
 
+println "Testing create order command"
+
 def createOrderCommand = new URL("http://localhost:8080/createOrderCommand?name="+ORDER_NAME).openConnection();
 def responseCode = createOrderCommand.getResponseCode();
-println(responseCode);
+assert (responseCode == 200)
 def orderId = null 
-if(responseCode.equals(200)) {
-    orderId = createOrderCommand.getInputStream().getText() 
-    println(orderId);
-}
+orderId = createOrderCommand.getInputStream().getText() 
+assert(orderId)
 
-def NEW_ORDER_NAME = "asdfg"
+println "Testing create order command complete:" +orderId
 
 
-def changeOrderCommand = new URL("http://localhost:8080/changeOrderNameCommand?newName="+NEW_ORDER_NAME+"&orderId="+orderId).openConnection();
+def NEW_ORDER_NAME1 = "asdfg"
+
+println "Changing order name to :"+NEW_ORDER_NAME1
+
+
+def changeOrderCommand = new URL("http://localhost:8080/changeOrderNameCommand?newName="+NEW_ORDER_NAME1+"&orderId="+orderId).openConnection();
 responseCode = changeOrderCommand.getResponseCode();
-println(responseCode);
-if(responseCode.equals(200)) {
-    orderId = changeOrderCommand.getInputStream().getText() 
-    println(orderId);
-}
+assert (responseCode == 200)
+orderId = changeOrderCommand.getInputStream().getText() 
+assert(orderId)
 
-	def getOrderAggregate = new URL("http://localhost:8080/orderAggregate?orderId="+orderId+"&snapshot=false").openConnection();
-	responseCode = getOrderAggregate.getResponseCode();
-	println(responseCode);
-	def orderAggregate = null 
-	if(responseCode.equals(200)) {
-	    orderAggregate = getOrderAggregate.getInputStream().getText() 
-	    println(orderAggregate);
-	    def jsonSlurper = new JsonSlurper()
-	    def orderAggregateJSON = jsonSlurper.parseText(orderAggregate)
-	    assert NEW_ORDER_NAME == orderAggregateJSON.name
-	}
+println "Verifying OrderAggregate"
+
+def getOrderAggregate = new URL("http://localhost:8080/orderAggregate?orderId="+orderId).openConnection();
+responseCode = getOrderAggregate.getResponseCode();
+assert (responseCode == 200)
+def orderAggregate = getOrderAggregate.getInputStream().getText() 
+assert(orderAggregate);
+def jsonSlurper = new JsonSlurper()
+def orderAggregateJSON = jsonSlurper.parseText(orderAggregate)
+assert NEW_ORDER_NAME1 == orderAggregateJSON.name
+
+println "OrderAggregate verified:" +orderAggregate
 
 	
-NEW_ORDER_NAME = "zxcvb"
+def NEW_ORDER_NAME2 = "zxcvb"
+
+println "Changing order name to :"+NEW_ORDER_NAME2
 
 
-changeOrderCommand = new URL("http://localhost:8080/changeOrderNameCommand?newName="+NEW_ORDER_NAME+"&orderId="+orderId).openConnection();
+changeOrderCommand = new URL("http://localhost:8080/changeOrderNameCommand?newName="+NEW_ORDER_NAME2+"&orderId="+orderId).openConnection();
 responseCode = changeOrderCommand.getResponseCode();
-println(responseCode);
-if(responseCode.equals(200)) {
-    orderId = changeOrderCommand.getInputStream().getText() 
-    println(orderId);
-}
+assert (responseCode == 200)
+orderId = changeOrderCommand.getInputStream().getText() 
+assert(orderId)
 
-	getOrderAggregate = new URL("http://localhost:8080/orderAggregate?orderId="+orderId+"&snapshot=false").openConnection();
-	responseCode = getOrderAggregate.getResponseCode();
-	println(responseCode);
-	orderAggregate = null 
-	if(responseCode.equals(200)) {
-	    orderAggregate = getOrderAggregate.getInputStream().getText() 
-	    println(orderAggregate);
-	    def jsonSlurper = new JsonSlurper()
-	    def orderAggregateJSON = jsonSlurper.parseText(orderAggregate)
-	    assert NEW_ORDER_NAME == orderAggregateJSON.name
-	}
+println "Verifying OrderAggregate"
+
+getOrderAggregate = new URL("http://localhost:8080/orderAggregate?orderId="+orderId).openConnection();
+responseCode = getOrderAggregate.getResponseCode();
+assert (responseCode == 200)
+orderAggregate = getOrderAggregate.getInputStream().getText() 
+assert (orderAggregate)
+orderAggregateJSON = jsonSlurper.parseText(orderAggregate)
+assert NEW_ORDER_NAME2 == orderAggregateJSON.name
 	
+println "OrderAggregate verified:" +orderAggregate
+
+println "Creating Snapshot"
 	
 def snapshotCommand = new URL("http://localhost:8080/orderSnapshot?orderId="+orderId).openConnection();
 responseCode = snapshotCommand.getResponseCode();
-println(responseCode);
-if(responseCode.equals(200)) {
-    orderId = snapshotCommand.getInputStream().getText() 
-    println(orderId);
-}
+assert (responseCode == 200)
+orderId = snapshotCommand.getInputStream().getText() 
+assert(orderId)
 
-println ("testing snapshots...")
-def aggregateURI = "http://localhost:8080/orderAggregateSnapshot?orderId="+orderId
-println aggregateURI	
-def getOrderAggregateSnapshot = new URL(aggregateURI).openConnection();
+println "Creating Snapshot over"
+
+println ("testing snapshots")
+def getOrderAggregateSnapshot = new URL("http://localhost:8080/orderAggregateSnapshot?orderId="+orderId).openConnection();
 responseCode = getOrderAggregateSnapshot.getResponseCode();
+assert (responseCode == 200)
 orderAggregate = getOrderAggregateSnapshot.getInputStream().getText() 
-println(orderAggregate);
-
-
+assert (orderAggregate)
+assert NEW_ORDER_NAME2 == orderAggregateJSON.name
+println ("testing snapshots:"+orderAggregate)
 	

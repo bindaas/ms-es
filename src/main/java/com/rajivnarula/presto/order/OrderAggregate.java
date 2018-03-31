@@ -22,7 +22,6 @@ public class OrderAggregate {
     transient private final List<Event> mutatingEvents ;
     private OrderStatus status = OrderStatus.NONE;
     private String reasonForCancelation ;
-    //private  Map<String, Long> lineItems = new HashMap<String,Long> ();
     
 	public OrderAggregate(CreateOrderCommand createOrderCommand) {
 		super();
