@@ -1,6 +1,7 @@
 package com.rajivnarula.presto.order;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class OrderAggregate {
     private String name ;
     transient private final List<Event> mutatingEvents ;
     private OrderStatus status = OrderStatus.NONE;
-    private String reasonForCancelation ;
+    private Date eventStreamDate ;
     
 	public OrderAggregate(CreateOrderCommand createOrderCommand) {
 		super();
@@ -41,6 +42,16 @@ public class OrderAggregate {
 	public OrderAggregate() {
 		mutatingEvents = new ArrayList<Event> ();
 	}
+
+	public OrderAggregate(OrderSnapshot orderSnapshot, List<Event> eventStream) {
+		OrderAggregate aggragtefromSnapshot = orderSnapshot.getOrderAggregate();
+		this.orderId =  aggragtefromSnapshot.getOrderId();
+		this.name = aggragtefromSnapshot.getName();
+		this.status = aggragtefromSnapshot.getStatus();
+		mutatingEvents = eventStream ;
+		apply (mutatingEvents);
+	}
+
 
 	public List<Event> mutatingEvents() {
 	    return mutatingEvents;
@@ -65,6 +76,12 @@ public class OrderAggregate {
 	public int getVersion() {
 		return mutatingEvents.size();
 	}
+	
+	
+	public Date getEventStreamDate() {
+		return eventStreamDate;
+	}
+
 
 	private void handle (CreateOrderCommand createOrderCommand) {
 		if (status != OrderStatus.NONE) {
@@ -129,6 +146,7 @@ public class OrderAggregate {
 */	
 	
 	private void apply (Event event) {
+		eventStreamDate = event.getEventDate() ;
 		if (event instanceof OrderCreatedEvent) {
 			apply ((OrderCreatedEvent)event);
 		}else if (event instanceof OrderChangedEvent) {
@@ -188,5 +206,8 @@ public class OrderAggregate {
 		
 	}
 
+
+	
+	
 	
 }

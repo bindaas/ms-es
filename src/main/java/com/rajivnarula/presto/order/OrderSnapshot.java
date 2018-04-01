@@ -1,6 +1,8 @@
 package com.rajivnarula.presto.order;
 
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,6 +24,7 @@ public class OrderSnapshot {
     private String theSnapshot;
     private String objectId;
     private int version ;
+    private Date snapshotDate ;
 
     protected OrderSnapshot() {}
 
@@ -33,18 +36,12 @@ public class OrderSnapshot {
 		this.objectId = instance.getOrderId().toString();
 		this.version = instance.getVersion();
 		this.objectId = objectId;
+		this.snapshotDate = instance.getEventStreamDate();
 	}
     
     
     public String getSnapshot() {
 		return theSnapshot;
-	}
-
-    public OrderAggregate getOrderAggregate() {
-	    Gson gson = new GsonBuilder().create();
-	    OrderAggregate orderAggregate = (OrderAggregate)gson.fromJson(theSnapshot, OrderAggregate.class);
-    	
-		return orderAggregate;
 	}
 
 	public String getObjectId() {
@@ -54,13 +51,24 @@ public class OrderSnapshot {
 	public int getVersion() {
 		return version;
 	}
+	
+    public Date getSnapshotDate() {
+		return snapshotDate;
+	}
+
+	public OrderAggregate getOrderAggregate() {
+	    Gson gson = new GsonBuilder().create();
+	    OrderAggregate orderAggregate = (OrderAggregate)gson.fromJson(theSnapshot, OrderAggregate.class);
+    	
+		return orderAggregate;
+	}
 
 	@Override
 	public String toString() {
 		return "OrderSnapshot [id=" + id + ", theSnapshot=" + theSnapshot + ", objectId=" + objectId + ", version="
-				+ version + "]";
+				+ version + ", snapshotDate=" + snapshotDate + "]";
 	}
-    
-
+	
+	
 
 }

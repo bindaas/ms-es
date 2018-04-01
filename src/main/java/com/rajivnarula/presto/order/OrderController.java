@@ -13,6 +13,7 @@ import com.rajivnarula.presto.order.event.EventSerializer;
 import com.rajivnarula.presto.order.event.OrderCreatedEvent;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -90,7 +91,12 @@ public class OrderController {
 		List<OrderSnapshot>  orderSnapshots= orderSnapshotRepository.findTop1ByObjectIdOrderByVersionDesc(orderId);
 		System.out.println("orderSnapshots:"+orderSnapshots);
 		OrderSnapshot orderSnapshot = orderSnapshots.get(0); 
-    		OrderAggregate orderAggregate = orderSnapshot.getOrderAggregate();
+		Date snapshotDate = orderSnapshot.getSnapshotDate();
+		List<PersistedEvent> persistedEvents = persistedEventRepository.findByObjectIdAndEventDateAfter(orderId, snapshotDate) ;
+		List<Event> eventStream  = EventSerializer.deserialize(persistedEvents) ;
+		
+		
+    		OrderAggregate orderAggregate = new OrderAggregate(orderSnapshot,eventStream);
         return orderAggregate;
     }
     
