@@ -14,8 +14,11 @@ changeOrderName ("zxcvb",orderId)
 verifyOrderAggregate ("zxcvb",orderId,jsonSlurper)
 
 createOrderSnapshot (orderId)
+verifyOrderAggregateSnapshot ("zxcvb",orderId,jsonSlurper)
 
-orderAggregate = testSnapshot (orderId)
+changeOrderName ("qaz",orderId)
+verifyOrderAggregate ("qaz",orderId,jsonSlurper)
+//verifyOrderAggregateSnapshot ("qaz",orderId,jsonSlurper)
 
 
 
@@ -66,13 +69,15 @@ def createOrderSnapshot (orderId){
 	orderId
 }
 
-def testSnapshot (orderId){
+def verifyOrderAggregateSnapshot (orderName,orderId,jsonSlurper){
 	println ("testing snapshots")
 	def getOrderAggregateSnapshot = new URL("http://localhost:8080/orderAggregateSnapshot?orderId="+orderId).openConnection();
 	def responseCode = getOrderAggregateSnapshot.getResponseCode();
 	assert (responseCode == 200)
 	def orderAggregate = getOrderAggregateSnapshot.getInputStream().getText() 
 	assert (orderAggregate)
+	def orderAggregateJSON = jsonSlurper.parseText(orderAggregate)
+	assert orderName == orderAggregateJSON.name
 	println ("testing snapshots:"+orderAggregate)
 	orderAggregate
 }
