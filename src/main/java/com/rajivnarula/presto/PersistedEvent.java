@@ -1,5 +1,7 @@
 package com.rajivnarula.presto;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,18 +21,19 @@ public class PersistedEvent {
     private String theEvent;
     private String eventName;
     private String objectId;
+    private Date eventDate ;
 
     protected PersistedEvent() {}
 
-    public PersistedEvent(Object instance, String eventName, String objectId) {
+    public PersistedEvent(Object instance, String eventName, String objectId, Date eventDate) {
 		super();
 		Gson gson = new GsonBuilder().create();
 
 		this.theEvent = gson.toJson(instance);
 		this.eventName = eventName;
 		this.objectId = objectId;
+		this.eventDate = eventDate;
 	}
-    
     
     public String getTheEvent() {
 		return theEvent;
@@ -44,12 +47,16 @@ public class PersistedEvent {
 		return objectId;
 	}
     
-    
-    @Override
-	public String toString() {
-		return "EventPersisted [id=" + id + ", theEvent=" + theEvent + ", eventName=" + eventName + ", orderId="
-				+ objectId + "]";
+    public Date getEventDate() {
+		return eventDate;
 	}
+
+	@Override
+	public String toString() {
+		return "PersistedEvent [id=" + id + ", theEvent=" + theEvent + ", eventName=" + eventName + ", objectId="
+				+ objectId + ", eventDate=" + eventDate + "]";
+	}
+
 
 
 }

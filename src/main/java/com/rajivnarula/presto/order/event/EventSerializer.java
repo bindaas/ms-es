@@ -29,7 +29,7 @@ public class EventSerializer {
 	    		Class eventClass = anEvent.getClass() ;
 			String eventName = eventClass.getName() ;
 			String objectId = anEvent.getOrderId().toString();
-			PersistedEvent persistedEvent = new PersistedEvent(anEvent, eventName, objectId);
+			PersistedEvent persistedEvent = new PersistedEvent(anEvent, eventName, objectId , anEvent.getEventDate());
 			list.add(persistedEvent);
 	    }
 		

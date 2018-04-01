@@ -7,6 +7,10 @@ java -jar build/libs/gs-rest-service-0.1.0.jar
 
 TODO
 
+Snapshot- introducing event date
+	OrderAggregate - apply date
+	OrderSnapshot- associate date
+	Dehyderaing event- put date and read events after that
 Order Cancel
 Order un-Cancel
 Add more fields to Order
