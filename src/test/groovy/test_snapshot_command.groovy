@@ -18,7 +18,7 @@ verifyOrderAggregateSnapshot ("zxcvb",orderId,jsonSlurper)
 
 changeOrderName ("qaz",orderId)
 verifyOrderAggregate ("qaz",orderId,jsonSlurper)
-//verifyOrderAggregateSnapshot ("qaz",orderId,jsonSlurper)
+//BROKEN verifyOrderAggregateSnapshot ("qaz",orderId,jsonSlurper)
 
 
 
