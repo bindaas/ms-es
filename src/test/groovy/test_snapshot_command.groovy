@@ -2,54 +2,38 @@ import groovy.json.*
 
 // TEST Create Order
 
-def ORDER_NAME = "qwerty"
 def responseCode = null 
 def jsonSlurper = new JsonSlurper()
 
-println "Testing create order command"
-def orderId = createOrderCommand (ORDER_NAME)
-println "Testing create order command complete:" +orderId
+def orderId = createOrderCommand ("qwerty")
 
-def NEW_ORDER_NAME1 = "asdfg"
-println "Changing order name to :"+NEW_ORDER_NAME1
-changeOrderName (NEW_ORDER_NAME1,orderId)
+changeOrderName ("asdfg",orderId)
+verifyOrderAggregate ("asdfg",orderId,jsonSlurper)
 
+changeOrderName ("zxcvb",orderId)
+verifyOrderAggregate ("zxcvb",orderId,jsonSlurper)
 
-println "Verifying OrderAggregate"
-def orderAggregate = verifyOrderAggregate (NEW_ORDER_NAME1,orderId,jsonSlurper)
-println "OrderAggregate verified:" +orderAggregate
-
-	
-def NEW_ORDER_NAME2 = "zxcvb"
-println "Changing order name to :"+NEW_ORDER_NAME2
-changeOrderName (NEW_ORDER_NAME2,orderId)
-
-println "Verifying OrderAggregate"
-orderAggregate = verifyOrderAggregate (NEW_ORDER_NAME2,orderId,jsonSlurper)
-println "OrderAggregate verified:" +orderAggregate
-
-println "Creating Snapshot"
 createOrderSnapshot (orderId)
-println "Creating Snapshot over"
 
-println ("testing snapshots")
 orderAggregate = testSnapshot (orderId)
-println ("testing snapshots:"+orderAggregate)
 
 
 
 //*******************************************************************************//
 
 def createOrderCommand (orderName){
+	println "Testing create order command"
 	def createOrderCommand = new URL("http://localhost:8080/createOrderCommand?name="+orderName).openConnection();
 	def responseCode = createOrderCommand.getResponseCode();
 	assert (responseCode == 200)
 	def orderId = createOrderCommand.getInputStream().getText() 
 	assert(orderId)
+	println "Testing create order command complete:" +orderId
 	orderId
 }
 
 def changeOrderName (newOrderName,orderId){
+	println "Changing order name to :"+newOrderName
 	def changeOrderCommand = new URL("http://localhost:8080/changeOrderNameCommand?newName="+newOrderName+"&orderId="+orderId).openConnection();
 	def responseCode = changeOrderCommand.getResponseCode();
 	assert (responseCode == 200)
@@ -59,6 +43,7 @@ def changeOrderName (newOrderName,orderId){
 }
 
 def verifyOrderAggregate (orderName,orderId,jsonSlurper){
+	println "Verifying OrderAggregate"
 	def getOrderAggregate = new URL("http://localhost:8080/orderAggregate?orderId="+orderId).openConnection();
 	def responseCode = getOrderAggregate.getResponseCode();
 	assert (responseCode == 200)
@@ -66,24 +51,29 @@ def verifyOrderAggregate (orderName,orderId,jsonSlurper){
 	assert (orderAggregate)
 	def orderAggregateJSON = jsonSlurper.parseText(orderAggregate)
 	assert orderName == orderAggregateJSON.name
+	println "OrderAggregate verified:" +orderAggregate
 	orderAggregate
 }
 
 def createOrderSnapshot (orderId){
+	println "Creating Snapshot"
 	def snapshotCommand = new URL("http://localhost:8080/orderSnapshot?orderId="+orderId).openConnection();
 	def responseCode = snapshotCommand.getResponseCode();
 	assert (responseCode == 200)
 	orderId = snapshotCommand.getInputStream().getText() 
 	assert(orderId)
+	println "Creating Snapshot over"
 	orderId
 }
 
 def testSnapshot (orderId){
+	println ("testing snapshots")
 	def getOrderAggregateSnapshot = new URL("http://localhost:8080/orderAggregateSnapshot?orderId="+orderId).openConnection();
 	def responseCode = getOrderAggregateSnapshot.getResponseCode();
 	assert (responseCode == 200)
 	def orderAggregate = getOrderAggregateSnapshot.getInputStream().getText() 
 	assert (orderAggregate)
+	println ("testing snapshots:"+orderAggregate)
 	orderAggregate
 }
 	
