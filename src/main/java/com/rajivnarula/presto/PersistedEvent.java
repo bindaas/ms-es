@@ -22,10 +22,11 @@ public class PersistedEvent {
     private String eventName;
     private String objectId;
     private Date eventDate ;
+    private int version ;
 
     protected PersistedEvent() {}
 
-    public PersistedEvent(Object instance, String eventName, String objectId, Date eventDate) {
+    public PersistedEvent(Object instance, String eventName, String objectId, Date eventDate, int version) {
 		super();
 		Gson gson = new GsonBuilder().create();
 
@@ -33,6 +34,8 @@ public class PersistedEvent {
 		this.eventName = eventName;
 		this.objectId = objectId;
 		this.eventDate = eventDate;
+		this.version = version;
+		
 	}
     
     public String getTheEvent() {
@@ -50,11 +53,15 @@ public class PersistedEvent {
     public Date getEventDate() {
 		return eventDate;
 	}
+    
+	public int getVersion() {
+		return version;
+	}
 
 	@Override
 	public String toString() {
 		return "PersistedEvent [id=" + id + ", theEvent=" + theEvent + ", eventName=" + eventName + ", objectId="
-				+ objectId + ", eventDate=" + eventDate + "]";
+				+ objectId + ", eventDate=" + eventDate + ", version=" + version + "]";
 	}
 
 

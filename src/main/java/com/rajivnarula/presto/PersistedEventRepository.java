@@ -9,5 +9,6 @@ public interface PersistedEventRepository extends CrudRepository<PersistedEvent,
 	
     List<PersistedEvent> findByObjectId(String objectId);
     List<PersistedEvent> findByObjectIdAndEventDateAfter(String objectId,Date eventDate);
+    List<PersistedEvent> findByObjectIdAndVersionGreaterThan(String objectId,int version);
 
 }

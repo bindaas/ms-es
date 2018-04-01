@@ -74,7 +74,7 @@ public class OrderAggregate {
 	}
 
 	public int getVersion() {
-		return mutatingEvents.size();
+		return mutatingEvents.size()-1;
 	}
 	
 	
@@ -87,7 +87,7 @@ public class OrderAggregate {
 		if (status != OrderStatus.NONE) {
 			throw new RuntimeException ("Invalid command sequence. Order is already created");
 		}
-		OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent (createOrderCommand.aggregateId(), createOrderCommand.name()); 
+		OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent (createOrderCommand.aggregateId(), createOrderCommand.name(),0); 
 		mutatingEvents.add(orderCreatedEvent);
 	}
 
@@ -96,7 +96,7 @@ public class OrderAggregate {
 			throw new RuntimeException ("Invalid command sequence. ");
 		}
 
-		OrderChangedEvent orderChangedEvent = new OrderChangedEvent (changeOrderNameCommand.aggregateId(), changeOrderNameCommand.newName()); 
+		OrderChangedEvent orderChangedEvent = new OrderChangedEvent (changeOrderNameCommand.aggregateId(), changeOrderNameCommand.newName(), mutatingEvents.size()); 
 		mutatingEvents.add(orderChangedEvent);
 		apply (orderChangedEvent);
 		List <Event> newEvents = new ArrayList<Event> ();

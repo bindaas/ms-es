@@ -10,12 +10,14 @@ public class OrderChangedEvent implements Event{
     private final UUID orderId;
     private final String newName ;
     private final Date eventDate ;
+    private final int version ;
     
-	public OrderChangedEvent(UUID orderId, String newName) {
+	public OrderChangedEvent(UUID orderId, String newName, int version) {
 		super();
 		this.orderId = orderId;
 		this.newName = newName;
 		this.eventDate = new Date ();
+		this.version = version ;
 	}
 
 	public UUID getOrderId() {
@@ -32,12 +34,21 @@ public class OrderChangedEvent implements Event{
 	}
 
 	@Override
+	public int getVersion() {
+		return version;
+	}
+
+	
+	
+	
+	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((eventDate == null) ? 0 : eventDate.hashCode());
 		result = prime * result + ((newName == null) ? 0 : newName.hashCode());
 		result = prime * result + ((orderId == null) ? 0 : orderId.hashCode());
+		result = prime * result + version;
 		return result;
 	}
 
@@ -65,12 +76,15 @@ public class OrderChangedEvent implements Event{
 				return false;
 		} else if (!orderId.equals(other.orderId))
 			return false;
+		if (version != other.version)
+			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "OrderChangedEvent [orderId=" + orderId + ", newName=" + newName + ", eventDate=" + eventDate + "]";
+		return "OrderChangedEvent [orderId=" + orderId + ", newName=" + newName + ", eventDate=" + eventDate
+				+ ", version=" + version + "]";
 	}
 
     

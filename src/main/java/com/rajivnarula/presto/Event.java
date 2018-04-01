@@ -7,4 +7,6 @@ public interface Event {
 	
 	public UUID getOrderId();
 	public Date getEventDate ();
+	public int getVersion ();
+	
 }

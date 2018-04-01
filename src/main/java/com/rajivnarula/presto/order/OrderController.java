@@ -92,8 +92,10 @@ public class OrderController {
 		System.out.println("orderSnapshots:"+orderSnapshots);
 		OrderSnapshot orderSnapshot = orderSnapshots.get(0); 
 		Date snapshotDate = orderSnapshot.getSnapshotDate();
-		List<PersistedEvent> persistedEvents = persistedEventRepository.findByObjectIdAndEventDateAfter(orderId, snapshotDate) ;
+		int snasphotVersion = orderSnapshot.getVersion();
+		List<PersistedEvent> persistedEvents = persistedEventRepository.findByObjectIdAndVersionGreaterThan(orderId,snasphotVersion );
 		List<Event> eventStream  = EventSerializer.deserialize(persistedEvents) ;
+		System.out.println("orderAggregateSnapshot>>>> events:"+eventStream.size()+" snasphotVersion:"+snasphotVersion);
 		
 		
     		OrderAggregate orderAggregate = new OrderAggregate(orderSnapshot,eventStream);

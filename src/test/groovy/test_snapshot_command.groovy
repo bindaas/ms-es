@@ -6,6 +6,7 @@ def responseCode = null
 def jsonSlurper = new JsonSlurper()
 
 def orderId = createOrderCommand ("qwerty")
+verifyOrderAggregate ("qwerty",orderId,jsonSlurper)
 
 changeOrderName ("asdfg",orderId)
 verifyOrderAggregate ("asdfg",orderId,jsonSlurper)
@@ -18,7 +19,7 @@ verifyOrderAggregateSnapshot ("zxcvb",orderId,jsonSlurper)
 
 changeOrderName ("qaz",orderId)
 verifyOrderAggregate ("qaz",orderId,jsonSlurper)
-//BROKEN verifyOrderAggregateSnapshot ("qaz",orderId,jsonSlurper)
+verifyOrderAggregateSnapshot ("qaz",orderId,jsonSlurper)
 
 
 
