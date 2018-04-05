@@ -8,8 +8,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.rajivnarula.presto.Event;
+import com.rajivnarula.presto.order.command.CancelOrderCommand;
 import com.rajivnarula.presto.order.command.ChangeOrderNameCommand;
 import com.rajivnarula.presto.order.command.CreateOrderCommand;
+import com.rajivnarula.presto.order.event.OrderCanceledEvent;
 import com.rajivnarula.presto.order.event.OrderChangedEvent;
 import com.rajivnarula.presto.order.event.OrderCreatedEvent;
 import com.google.gson.Gson;
@@ -104,12 +106,12 @@ public class OrderAggregate {
 		return newEvents;
 	}
 
-/*	public List <Event> handle (CancelOrderCommand cancelOrderCommand) {
+public List <Event> handle (CancelOrderCommand cancelOrderCommand) {
 		if ((status == OrderStatus.NONE)) {
 			throw new RuntimeException ("Invalid command sequence. ");
 		}
 
-		OrderCanceledEvent orderCanceledEvent = new OrderCanceledEvent (cancelOrderCommand.aggregateId(), cancelOrderCommand.reason()); 
+		OrderCanceledEvent orderCanceledEvent = new OrderCanceledEvent (cancelOrderCommand.aggregateId(), mutatingEvents.size()); 
 		mutatingEvents.add(orderCanceledEvent);
 		apply (orderCanceledEvent);
 		List <Event> newEvents = new ArrayList<Event> ();
@@ -117,40 +119,14 @@ public class OrderAggregate {
 		return newEvents;
 	}
 
-	public List <Event> handle (ShipOrderCommand shipOrderCommand) {
-		if (status != OrderStatus.INITIALIZED) {
-			throw new RuntimeException ("Invalid command sequence. ");
-		}
-
-		OrderShippedEvent orderShippedEvent = new OrderShippedEvent (shipOrderCommand.aggregateId()); 
-		mutatingEvents.add(orderShippedEvent);
-		apply (orderShippedEvent);
-		List <Event> newEvents = new ArrayList<Event> ();
-		newEvents.add(orderShippedEvent);
-		return newEvents;
-		
-	}
-
-	public List <Event> handle (AddLineItemCommand addItemCommand) {
-		if ((status == OrderStatus.NONE)||(status == OrderStatus.CANCELED)) {
-			throw new RuntimeException ("Invalid command sequence. ");
-		}
-
-		LineitemAddedEvent itemAddedEvent = new LineitemAddedEvent (addItemCommand.aggregateId(), addItemCommand.sku(), addItemCommand.quantiy()); 
-		mutatingEvents.add(itemAddedEvent);
-		apply (itemAddedEvent);
-		List <Event> newEvents = new ArrayList<Event> ();
-		newEvents.add(itemAddedEvent);
-		return newEvents;
-	}
-*/	
-	
-	private void apply (Event event) {
+private void apply (Event event) {
 		eventStreamDate = event.getEventDate() ;
 		if (event instanceof OrderCreatedEvent) {
 			apply ((OrderCreatedEvent)event);
 		}else if (event instanceof OrderChangedEvent) {
 			apply ((OrderChangedEvent)event);
+		}else if (event instanceof OrderCanceledEvent) {
+			apply ((OrderCanceledEvent)event);
 		}else {
 			throw new RuntimeException ("Unexpected event");
 		}
@@ -168,36 +144,10 @@ public class OrderAggregate {
 		System.out.println("Apply OrderChangedEvent>>>>");
 	}
 
-/*	private void apply (OrderCanceledEvent orderCanceledEvent) {
+	private void apply (OrderCanceledEvent orderCanceledEvent) {
 		status = OrderStatus.CANCELED ;
-		reasonForCancelation = orderCanceledEvent.reason();
 		System.out.println("Apply OrderCanceledEvent>>>>");
 	}
-
-	private void apply (LineitemAddedEvent itemAddedEvent) {
-		status = OrderStatus.INITIALIZED ;
-		addLineItem (itemAddedEvent.sku(), itemAddedEvent.quantiy());
-		System.out.println("Apply ItemAddedEvent>>>>");
-	}
-
-	private void apply (OrderShippedEvent orderShippedEvent) {
-		status = OrderStatus.SHIPPED ;
-		System.out.println("Apply OrderShippedEvent>>>>");
-	}
-	
-	private void addLineItem (String sku, long qty) {
-		Long quantity = lineItems.get(sku) ;
-		if (quantity == null) {
-			quantity = new Long(qty);
-		}else {
-			quantity += new Long(qty);
-		}
-		lineItems.put(sku,quantity) ;
-	}
-	public Long getQuantity (String sku) {
-		return lineItems.get(sku) ;
-	}
-*/	
 	
 	private void apply (List<Event> eventStream) {
 	    for (final Event anEvent : eventStream) {

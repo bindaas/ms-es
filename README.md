@@ -5,13 +5,14 @@ gradle assemble
 
 java -jar build/libs/gs-rest-service-0.1.0.jar
 
-TODO
+*TODO*
 
-Order Cancel
 Order un-Cancel
-Convert GET to POST
 cleanup
-
+	Convert GET to POST
+	Refactor Controller
+	Rename test
+	Add more test cases
 
 Another MS
 Cross MS communication

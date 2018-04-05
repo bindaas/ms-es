@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rajivnarula.presto.Event;
 import com.rajivnarula.presto.PersistedEvent;
 import com.rajivnarula.presto.PersistedEventRepository;
+import com.rajivnarula.presto.order.command.CancelOrderCommand;
 import com.rajivnarula.presto.order.command.ChangeOrderNameCommand;
 import com.rajivnarula.presto.order.command.CreateOrderCommand;
 import com.rajivnarula.presto.order.event.EventSerializer;
@@ -59,6 +60,23 @@ public class OrderController {
     		persistedEventRepository.save(newPersistedEvents);
         return orderId.toString();
     }
+
+    @RequestMapping("/cancelOrderCommand")
+    public String updateOrderCommand(@RequestParam(value="orderId") String orderId)  throws Exception{
+		System.out.println("cancelOrderCommand>>>>");
+    		List<PersistedEvent> persistedEvents = persistedEventRepository.findByObjectId(orderId);
+    		
+    		List<Event> eventStream  = EventSerializer.deserialize(persistedEvents) ;
+    		UUID orderUUID = UUID.fromString(orderId);
+    		
+    		CancelOrderCommand cancelOrderCommand = new CancelOrderCommand (orderUUID);
+    		OrderAggregate orderAggregate = new OrderAggregate (orderUUID,eventStream);
+    		List<Event> events  = 	orderAggregate.handle (cancelOrderCommand);
+    		List<PersistedEvent> newPersistedEvents = EventSerializer.serialize(events);
+    		persistedEventRepository.save(newPersistedEvents);
+        return orderId.toString();
+    }
+    
     
     @RequestMapping("/orderSnapshot")
     public String orderSnapshot( @RequestParam(value="orderId") String orderId)  throws Exception{

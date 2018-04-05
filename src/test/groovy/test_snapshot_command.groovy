@@ -6,20 +6,23 @@ def responseCode = null
 def jsonSlurper = new JsonSlurper()
 
 def orderId = createOrderCommand ("qwerty")
-verifyOrderAggregate ("qwerty",orderId,jsonSlurper)
+verifyOrderAggregate ("qwerty",orderId,jsonSlurper,"CREATED")
 
 changeOrderName ("asdfg",orderId)
-verifyOrderAggregate ("asdfg",orderId,jsonSlurper)
+verifyOrderAggregate ("asdfg",orderId,jsonSlurper,"CREATED")
 
 changeOrderName ("zxcvb",orderId)
-verifyOrderAggregate ("zxcvb",orderId,jsonSlurper)
+verifyOrderAggregate ("zxcvb",orderId,jsonSlurper,"CREATED")
 
 createOrderSnapshot (orderId)
-verifyOrderAggregateSnapshot ("zxcvb",orderId,jsonSlurper)
+verifyOrderAggregateSnapshot ("zxcvb",orderId,jsonSlurper,"CREATED")
 
 changeOrderName ("qaz",orderId)
-verifyOrderAggregate ("qaz",orderId,jsonSlurper)
-verifyOrderAggregateSnapshot ("qaz",orderId,jsonSlurper)
+verifyOrderAggregate ("qaz",orderId,jsonSlurper,"CREATED")
+verifyOrderAggregateSnapshot ("qaz",orderId,jsonSlurper,"CREATED")
+
+cancelOrder (orderId)
+verifyOrderAggregate ("qaz",orderId,jsonSlurper,"CANCELED")
 
 
 
@@ -46,7 +49,17 @@ def changeOrderName (newOrderName,orderId){
 	orderId
 }
 
-def verifyOrderAggregate (orderName,orderId,jsonSlurper){
+def cancelOrder (orderId){
+	println "Canceling order :"+orderId
+	def cancelOrderCommand = new URL("http://localhost:8080/cancelOrderCommand?orderId="+orderId).openConnection();
+	def responseCode = cancelOrderCommand.getResponseCode();
+	assert (responseCode == 200)
+	orderId = cancelOrderCommand.getInputStream().getText() 
+	assert(orderId)
+	orderId
+}
+
+def verifyOrderAggregate (orderName,orderId,jsonSlurper, orderStatus){
 	println "Verifying OrderAggregate"
 	def getOrderAggregate = new URL("http://localhost:8080/orderAggregate?orderId="+orderId).openConnection();
 	def responseCode = getOrderAggregate.getResponseCode();
@@ -55,6 +68,7 @@ def verifyOrderAggregate (orderName,orderId,jsonSlurper){
 	assert (orderAggregate)
 	def orderAggregateJSON = jsonSlurper.parseText(orderAggregate)
 	assert orderName == orderAggregateJSON.name
+	assert orderStatus == orderAggregateJSON.status
 	println "OrderAggregate verified:" +orderAggregate
 	orderAggregate
 }
@@ -70,7 +84,7 @@ def createOrderSnapshot (orderId){
 	orderId
 }
 
-def verifyOrderAggregateSnapshot (orderName,orderId,jsonSlurper){
+def verifyOrderAggregateSnapshot (orderName,orderId,jsonSlurper, orderStatus){
 	println ("testing snapshots")
 	def getOrderAggregateSnapshot = new URL("http://localhost:8080/orderAggregateSnapshot?orderId="+orderId).openConnection();
 	def responseCode = getOrderAggregateSnapshot.getResponseCode();
@@ -79,6 +93,7 @@ def verifyOrderAggregateSnapshot (orderName,orderId,jsonSlurper){
 	assert (orderAggregate)
 	def orderAggregateJSON = jsonSlurper.parseText(orderAggregate)
 	assert orderName == orderAggregateJSON.name
+	assert orderStatus == orderAggregateJSON.status
 	println ("testing snapshots:"+orderAggregate)
 	orderAggregate
 }
