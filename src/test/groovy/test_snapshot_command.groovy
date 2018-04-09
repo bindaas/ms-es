@@ -24,6 +24,12 @@ verifyOrderAggregateSnapshot ("qaz",orderId,jsonSlurper,"CREATED")
 cancelOrder (orderId)
 verifyOrderAggregate ("qaz",orderId,jsonSlurper,"CANCELED")
 
+uncancelOrder (orderId)
+verifyOrderAggregate ("qaz",orderId,jsonSlurper,"CREATED")
+
+cancelOrder (orderId)
+verifyOrderAggregate ("qaz",orderId,jsonSlurper,"CANCELED")
+
 
 
 //*******************************************************************************//
@@ -58,6 +64,17 @@ def cancelOrder (orderId){
 	assert(orderId)
 	orderId
 }
+
+def uncancelOrder (orderId){
+	println "Uncanceling order :"+orderId
+	def uncancelOrderCommand = new URL("http://localhost:8080/uncancelOrderCommand?orderId="+orderId).openConnection();
+	def responseCode = uncancelOrderCommand.getResponseCode();
+	assert (responseCode == 200)
+	orderId = uncancelOrderCommand.getInputStream().getText() 
+	assert(orderId)
+	orderId
+}
+
 
 def verifyOrderAggregate (orderName,orderId,jsonSlurper, orderStatus){
 	println "Verifying OrderAggregate"

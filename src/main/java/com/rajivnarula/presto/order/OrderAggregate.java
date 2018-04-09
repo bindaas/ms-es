@@ -11,9 +11,11 @@ import com.rajivnarula.presto.Event;
 import com.rajivnarula.presto.order.command.CancelOrderCommand;
 import com.rajivnarula.presto.order.command.ChangeOrderNameCommand;
 import com.rajivnarula.presto.order.command.CreateOrderCommand;
+import com.rajivnarula.presto.order.command.UncancelOrderCommand;
 import com.rajivnarula.presto.order.event.OrderCanceledEvent;
 import com.rajivnarula.presto.order.event.OrderChangedEvent;
 import com.rajivnarula.presto.order.event.OrderCreatedEvent;
+import com.rajivnarula.presto.order.event.OrderUncanceledEvent;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -108,7 +110,7 @@ public class OrderAggregate {
 
 public List <Event> handle (CancelOrderCommand cancelOrderCommand) {
 		if ((status == OrderStatus.NONE)) {
-			throw new RuntimeException ("Invalid command sequence. ");
+			throw new RuntimeException ("CancelOrderCommand.handle: Invalid command sequence. ");
 		}
 
 		OrderCanceledEvent orderCanceledEvent = new OrderCanceledEvent (cancelOrderCommand.aggregateId(), mutatingEvents.size()); 
@@ -119,6 +121,20 @@ public List <Event> handle (CancelOrderCommand cancelOrderCommand) {
 		return newEvents;
 	}
 
+public List <Event> handle (UncancelOrderCommand unCancelOrderCommand) {
+	if ((status != OrderStatus.CANCELED)) {
+		throw new RuntimeException ("UncancelOrderCommand.handle: Invalid command sequence. ");
+	}
+
+	OrderUncanceledEvent orderUncanceledEvent = new OrderUncanceledEvent (unCancelOrderCommand.aggregateId(), mutatingEvents.size()); 
+	mutatingEvents.add(orderUncanceledEvent);
+	apply (orderUncanceledEvent);
+	List <Event> newEvents = new ArrayList<Event> ();
+	newEvents.add(orderUncanceledEvent);
+	return newEvents;
+}
+
+
 private void apply (Event event) {
 		eventStreamDate = event.getEventDate() ;
 		if (event instanceof OrderCreatedEvent) {
@@ -127,6 +143,8 @@ private void apply (Event event) {
 			apply ((OrderChangedEvent)event);
 		}else if (event instanceof OrderCanceledEvent) {
 			apply ((OrderCanceledEvent)event);
+		}else if (event instanceof OrderUncanceledEvent) {
+			apply ((OrderUncanceledEvent)event);
 		}else {
 			throw new RuntimeException ("Unexpected event");
 		}
@@ -148,7 +166,12 @@ private void apply (Event event) {
 		status = OrderStatus.CANCELED ;
 		System.out.println("Apply OrderCanceledEvent>>>>");
 	}
-	
+
+	private void apply (OrderUncanceledEvent orderUncanceledEvent) {
+		status = OrderStatus.CREATED ;
+		System.out.println("Apply OrderUncanceledEvent>>>>");
+	}
+
 	private void apply (List<Event> eventStream) {
 	    for (final Event anEvent : eventStream) {
 	    		apply (anEvent);
