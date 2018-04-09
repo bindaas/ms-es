@@ -7,7 +7,10 @@ java -jar build/libs/gs-rest-service-0.1.0.jar
 
 *TODO*
 
-Order un-Cancel
+Projections
+	Publish events
+	event listener
+Add line items
 cleanup
 	Convert GET to POST
 	Refactor Controller
@@ -16,8 +19,6 @@ cleanup
 
 Another MS
 Cross MS communication
-Projections
-	
 Add more fields to Order
 Docker
 Swagger
