@@ -1,24 +1,20 @@
 # ms-es
 
-Pre-requisites:
+##Pre-requisites:
 Java
 Gradle
 
 
-Commands:
+##Commands:
 gradle assemble
 java -jar build/libs/gs-rest-service-0.1.0.jar
+groovy src/test/groovy/test_all.groovy 
 
-*TODO*
+##TODO
 
 cleanup
 	Convert GET to POST
-	Refactor Controller
-	Rename test
-	Refactor test cases
-	Add more test cases ?
-	Readmme
-Blogit	
+	Readmme\ Comments
 
 Projections
 	Publish events
@@ -31,3 +27,6 @@ Docker
 Swagger
 Create Snapshot periodically
 Validations
+Refactor Controller
+Refactor test cases
+Add more test cases
