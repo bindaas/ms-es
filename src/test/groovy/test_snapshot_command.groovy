@@ -1,4 +1,7 @@
 import groovy.json.*
+import groovyx.net.http.*
+import groovyx.net.http.ContentType.*
+import groovyx.net.http.Method.*
 
 // TEST Create Order
 
@@ -36,13 +39,21 @@ verifyOrderAggregate ("qaz",orderId,jsonSlurper,"CANCELED")
 
 def createOrderCommand (orderName){
 	println "Testing create order command"
-	def createOrderCommand = new URL("http://localhost:8080/createOrderCommand?name="+orderName).openConnection();
-	def responseCode = createOrderCommand.getResponseCode();
-	assert (responseCode == 200)
-	def orderId = createOrderCommand.getInputStream().getText() 
+	def baseUrl = new URL('http://localhost:8080/createOrderCommand')
+	def queryString = "name="+orderName
+	def connection = baseUrl.openConnection()
+	connection.with {
+	  doOutput = true
+	  requestMethod = 'POST'
+	  outputStream.withWriter { writer ->
+	    writer << queryString
+	  }
+	  orderId =  content.text
+	}
 	assert(orderId)
 	println "Testing create order command complete:" +orderId
 	orderId
+	
 }
 
 def changeOrderName (newOrderName,orderId){
@@ -77,11 +88,13 @@ def uncancelOrder (orderId){
 
 
 def verifyOrderAggregate (orderName,orderId,jsonSlurper, orderStatus){
-	println "Verifying OrderAggregate"
+	println "Verifying OrderAggregate orderName->"+orderName+" orderId->"+orderId
 	def getOrderAggregate = new URL("http://localhost:8080/orderAggregate?orderId="+orderId).openConnection();
 	def responseCode = getOrderAggregate.getResponseCode();
 	assert (responseCode == 200)
 	def orderAggregate = getOrderAggregate.getInputStream().getText() 
+	println "Verifying OrderAggregate orderAggregate->"+orderAggregate
+	
 	assert (orderAggregate)
 	def orderAggregateJSON = jsonSlurper.parseText(orderAggregate)
 	assert orderName == orderAggregateJSON.name

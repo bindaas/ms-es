@@ -1,5 +1,6 @@
 package com.rajivnarula.presto.order;
 
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,7 +31,7 @@ public class OrderController {
     @Autowired
     private OrderSnapshotRepository orderSnapshotRepository ;
 	
-    @RequestMapping("/createOrderCommand")
+    @RequestMapping(value = "/createOrderCommand" , method = RequestMethod.POST)
     public String createOrderCommand(@RequestParam(value="name", defaultValue="any name") String name) {
 		System.out.println("createOrderCommand>>>>");
 

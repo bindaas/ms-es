@@ -108,7 +108,7 @@ public class OrderAggregate {
 		return newEvents;
 	}
 
-public List <Event> handle (CancelOrderCommand cancelOrderCommand) {
+	public List <Event> handle (CancelOrderCommand cancelOrderCommand) {
 		if ((status == OrderStatus.NONE)) {
 			throw new RuntimeException ("CancelOrderCommand.handle: Invalid command sequence. ");
 		}
@@ -121,21 +121,21 @@ public List <Event> handle (CancelOrderCommand cancelOrderCommand) {
 		return newEvents;
 	}
 
-public List <Event> handle (UncancelOrderCommand unCancelOrderCommand) {
-	if ((status != OrderStatus.CANCELED)) {
-		throw new RuntimeException ("UncancelOrderCommand.handle: Invalid command sequence. ");
+	public List <Event> handle (UncancelOrderCommand unCancelOrderCommand) {
+		if ((status != OrderStatus.CANCELED)) {
+			throw new RuntimeException ("UncancelOrderCommand.handle: Invalid command sequence. ");
+		}
+	
+		OrderUncanceledEvent orderUncanceledEvent = new OrderUncanceledEvent (unCancelOrderCommand.aggregateId(), mutatingEvents.size()); 
+		mutatingEvents.add(orderUncanceledEvent);
+		apply (orderUncanceledEvent);
+		List <Event> newEvents = new ArrayList<Event> ();
+		newEvents.add(orderUncanceledEvent);
+		return newEvents;
 	}
 
-	OrderUncanceledEvent orderUncanceledEvent = new OrderUncanceledEvent (unCancelOrderCommand.aggregateId(), mutatingEvents.size()); 
-	mutatingEvents.add(orderUncanceledEvent);
-	apply (orderUncanceledEvent);
-	List <Event> newEvents = new ArrayList<Event> ();
-	newEvents.add(orderUncanceledEvent);
-	return newEvents;
-}
 
-
-private void apply (Event event) {
+	private void apply (Event event) {
 		eventStreamDate = event.getEventDate() ;
 		if (event instanceof OrderCreatedEvent) {
 			apply ((OrderCreatedEvent)event);
@@ -178,9 +178,5 @@ private void apply (Event event) {
 	    }
 		
 	}
-
-
-	
-	
 	
 }
