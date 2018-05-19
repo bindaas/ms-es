@@ -97,6 +97,7 @@ public class OrderAggregate {
 	}
 
 
+	// private , because it can be called only from within (Constructor)
 	private void handle (CreateOrderCommand createOrderCommand) {
 		if (status != OrderStatus.NONE) {
 			throw new RuntimeException ("Invalid command sequence. Order is already created");
@@ -105,6 +106,12 @@ public class OrderAggregate {
 		mutatingEvents.add(orderCreatedEvent);
 	}
 
+	/* Aggregate "receives" a Command and creates "Events"
+	 * There is a handler for every Command.
+	 * If the command is invalid , it is rejected
+	 *
+	 */
+	
 	public List <Event> handle (ChangeOrderNameCommand changeOrderNameCommand) {
 		if ((status == OrderStatus.NONE)|| (status == OrderStatus.CANCELED)) {
 			throw new RuntimeException ("Invalid command sequence. ");
@@ -144,7 +151,16 @@ public class OrderAggregate {
 		return newEvents;
 	}
 
+	// All events are applied to the Aggregate
+	// Applying the event is the only way to make a change to an Aggregate
+	private void apply (List<Event> eventStream) {
+	    for (final Event anEvent : eventStream) {
+	    		apply (anEvent);
+	    }
+		
+	}
 
+	//  Apply the appropriate event
 	private void apply (Event event) {
 		eventStreamDate = event.getEventDate() ;
 		if (event instanceof OrderCreatedEvent) {
@@ -164,29 +180,19 @@ public class OrderAggregate {
 		orderId = orderCreatedEvent.getOrderId();
 		name = orderCreatedEvent.getName();
 		status = OrderStatus.CREATED ;
-		System.out.println("Apply OrderCreatedEvent>>>>");
 	}
 
 	private void apply (OrderChangedEvent orderChangedEvent) {
 		name = orderChangedEvent.newName();
-		System.out.println("Apply OrderChangedEvent>>>>");
 	}
 
 	private void apply (OrderCanceledEvent orderCanceledEvent) {
 		status = OrderStatus.CANCELED ;
-		System.out.println("Apply OrderCanceledEvent>>>>");
 	}
 
 	private void apply (OrderUncanceledEvent orderUncanceledEvent) {
 		status = OrderStatus.CREATED ;
-		System.out.println("Apply OrderUncanceledEvent>>>>");
 	}
 
-	private void apply (List<Event> eventStream) {
-	    for (final Event anEvent : eventStream) {
-	    		apply (anEvent);
-	    }
-		
-	}
 	
 }
