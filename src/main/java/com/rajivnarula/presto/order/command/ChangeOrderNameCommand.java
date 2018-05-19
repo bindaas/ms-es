@@ -4,13 +4,20 @@ import java.util.UUID;
 
 import com.rajivnarula.presto.Command;
 
+/**
+ * Change Order Name Command
+ * 
+ * */
+
+
 public class ChangeOrderNameCommand implements Command {
 
     private final UUID orderId;
     private final String newName ;
 
     public ChangeOrderNameCommand(UUID orderId, String newName) {
-		if ((orderId == null) || (newName == null) || (newName.isEmpty())) {
+		// Validate for input
+    		if ((orderId == null) || (newName == null) || (newName.isEmpty())) {
 			throw new IllegalArgumentException ();
 		}
         this.orderId = orderId;

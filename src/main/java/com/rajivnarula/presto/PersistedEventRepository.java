@@ -5,6 +5,11 @@ import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
 
+/**
+ * Manages the Read-Write for Persisted Events
+ * 
+ * */
+
 public interface PersistedEventRepository extends CrudRepository<PersistedEvent, Long>{
 	
     List<PersistedEvent> findByObjectId(String objectId);

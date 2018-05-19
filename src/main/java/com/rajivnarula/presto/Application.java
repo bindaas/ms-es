@@ -3,6 +3,11 @@ package com.rajivnarula.presto;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+/**
+ * Entry point to the Spring boot Application
+ * 
+ * */
+
 @SpringBootApplication
 public class Application {
 	

@@ -10,6 +10,12 @@ import javax.persistence.Id;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+
+/**
+ * The Event that will be persisted to the Database
+ * 
+ * */
+
 @Entity
 public class PersistedEvent {
 

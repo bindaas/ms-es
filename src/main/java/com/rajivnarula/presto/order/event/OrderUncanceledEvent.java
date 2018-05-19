@@ -4,6 +4,11 @@ import java.util.UUID;
 
 import com.rajivnarula.presto.Event;
 
+/**
+ * Order Uncanceled Event
+ * 
+ * */
+
 public class OrderUncanceledEvent implements Event{
 	
     private final UUID orderId;

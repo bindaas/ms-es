@@ -14,6 +14,11 @@ import com.rajivnarula.presto.Event;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+/**
+ * Snapshot's persistence model
+ * 
+ * */
+
 
 @Entity
 public class OrderSnapshot {

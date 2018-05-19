@@ -5,6 +5,11 @@ import java.util.UUID;
 
 import com.rajivnarula.presto.Event;
 
+/**
+ * Order Changed Event
+ * 
+ * */
+
 public class OrderChangedEvent implements Event{
 	
     private final UUID orderId;

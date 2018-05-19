@@ -20,6 +20,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 
+/**
+ * This represents the "Aggregate" for the Events
+ * OrderAggregate can be created in 3 ways. From-
+ * 	An OrderCommand
+ *  A list of events
+ *  A Snapshot and events
+ * 
+ * */
+
+
 public class OrderAggregate {
 	
     private UUID orderId;

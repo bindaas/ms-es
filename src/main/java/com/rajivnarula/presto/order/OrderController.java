@@ -22,6 +22,11 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * API layer for Commands 
+ * 
+ * */
+
 @RestController
 public class OrderController {
 

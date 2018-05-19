@@ -10,8 +10,14 @@ import com.google.gson.GsonBuilder;
 import com.rajivnarula.presto.Event;
 import com.rajivnarula.presto.PersistedEvent;
 
+/**
+ * Serialize and De-seriralize PersistedEvents and Events
+ * 
+ * */
+
 public class EventSerializer {
 
+	
 	public static List <Event> deserialize (List <PersistedEvent> persistedEvents ) throws Exception{
 		List<Event> list = new ArrayList <Event>(persistedEvents.size());
 	    for (final PersistedEvent aPersistedEvent : persistedEvents) {

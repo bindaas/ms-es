@@ -92,17 +92,8 @@ def cancelOrder (orderId){
 	  orderId =  content.text
 	}
 	assert(orderId)
-	println "Testing change order command complete:" +orderId
 	orderId
 
-	/*
-	def cancelOrderCommand = new URL("http://localhost:8080/cancelOrderCommand?orderId="+orderId).openConnection();
-	def responseCode = cancelOrderCommand.getResponseCode();
-	assert (responseCode == 200)
-	orderId = cancelOrderCommand.getInputStream().getText() 
-	assert(orderId)
-	orderId
-	*/
 }
 
 def uncancelOrder (orderId){
@@ -123,14 +114,6 @@ def uncancelOrder (orderId){
 	assert(orderId)
 	orderId
 
-	/*
-	def uncancelOrderCommand = new URL("http://localhost:8080/uncancelOrderCommand?orderId="+orderId).openConnection();
-	def responseCode = uncancelOrderCommand.getResponseCode();
-	assert (responseCode == 200)
-	orderId = uncancelOrderCommand.getInputStream().getText() 
-	assert(orderId)
-	orderId
-	*/
 }
 
 
@@ -166,18 +149,8 @@ def createOrderSnapshot (orderId){
 	  orderId =  content.text
 	}
 	assert(orderId)
-	println "Testing change order command complete:" +orderId
 	orderId
 	
-	/*
-	def snapshotCommand = new URL("http://localhost:8080/orderSnapshot?orderId="+orderId).openConnection();
-	def responseCode = snapshotCommand.getResponseCode();
-	assert (responseCode == 200)
-	orderId = snapshotCommand.getInputStream().getText() 
-	assert(orderId)
-	println "Creating Snapshot over"
-	orderId
-	*/
 }
 
 def verifyOrderAggregateSnapshot (orderName,orderId,jsonSlurper, orderStatus){
