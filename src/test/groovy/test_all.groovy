@@ -58,32 +58,79 @@ def createOrderCommand (orderName){
 
 def changeOrderName (newOrderName,orderId){
 	println "Changing order name to :"+newOrderName
-	def changeOrderCommand = new URL("http://localhost:8080/changeOrderNameCommand?newName="+newOrderName+"&orderId="+orderId).openConnection();
-	def responseCode = changeOrderCommand.getResponseCode();
-	assert (responseCode == 200)
-	orderId = changeOrderCommand.getInputStream().getText() 
+	
+	def baseUrl = new URL('http://localhost:8080/changeOrderNameCommand')
+	def queryString = "newName="+newOrderName+"&orderId="+orderId
+	println "queryString:"+queryString
+	def connection = baseUrl.openConnection()
+	connection.with {
+	  doOutput = true
+	  requestMethod = 'POST'
+	  outputStream.withWriter { writer ->
+	    writer << queryString
+	  }
+	  orderId =  content.text
+	}
 	assert(orderId)
+	println "Testing change order command complete:" +orderId
 	orderId
 }
 
 def cancelOrder (orderId){
 	println "Canceling order :"+orderId
+	
+	def baseUrl = new URL('http://localhost:8080/cancelOrderCommand')
+	def queryString = "orderId="+orderId
+	println "queryString:"+queryString
+	def connection = baseUrl.openConnection()
+	connection.with {
+	  doOutput = true
+	  requestMethod = 'POST'
+	  outputStream.withWriter { writer ->
+	    writer << queryString
+	  }
+	  orderId =  content.text
+	}
+	assert(orderId)
+	println "Testing change order command complete:" +orderId
+	orderId
+
+	/*
 	def cancelOrderCommand = new URL("http://localhost:8080/cancelOrderCommand?orderId="+orderId).openConnection();
 	def responseCode = cancelOrderCommand.getResponseCode();
 	assert (responseCode == 200)
 	orderId = cancelOrderCommand.getInputStream().getText() 
 	assert(orderId)
 	orderId
+	*/
 }
 
 def uncancelOrder (orderId){
 	println "Uncanceling order :"+orderId
+	
+	def baseUrl = new URL('http://localhost:8080/uncancelOrderCommand')
+	def queryString = "orderId="+orderId
+	println "queryString:"+queryString
+	def connection = baseUrl.openConnection()
+	connection.with {
+	  doOutput = true
+	  requestMethod = 'POST'
+	  outputStream.withWriter { writer ->
+	    writer << queryString
+	  }
+	  orderId =  content.text
+	}
+	assert(orderId)
+	orderId
+
+	/*
 	def uncancelOrderCommand = new URL("http://localhost:8080/uncancelOrderCommand?orderId="+orderId).openConnection();
 	def responseCode = uncancelOrderCommand.getResponseCode();
 	assert (responseCode == 200)
 	orderId = uncancelOrderCommand.getInputStream().getText() 
 	assert(orderId)
 	orderId
+	*/
 }
 
 
@@ -105,6 +152,24 @@ def verifyOrderAggregate (orderName,orderId,jsonSlurper, orderStatus){
 
 def createOrderSnapshot (orderId){
 	println "Creating Snapshot"
+	
+	def baseUrl = new URL('http://localhost:8080/orderSnapshot')
+	def queryString = "orderId="+orderId
+	println "queryString:"+queryString
+	def connection = baseUrl.openConnection()
+	connection.with {
+	  doOutput = true
+	  requestMethod = 'POST'
+	  outputStream.withWriter { writer ->
+	    writer << queryString
+	  }
+	  orderId =  content.text
+	}
+	assert(orderId)
+	println "Testing change order command complete:" +orderId
+	orderId
+	
+	/*
 	def snapshotCommand = new URL("http://localhost:8080/orderSnapshot?orderId="+orderId).openConnection();
 	def responseCode = snapshotCommand.getResponseCode();
 	assert (responseCode == 200)
@@ -112,6 +177,7 @@ def createOrderSnapshot (orderId){
 	assert(orderId)
 	println "Creating Snapshot over"
 	orderId
+	*/
 }
 
 def verifyOrderAggregateSnapshot (orderName,orderId,jsonSlurper, orderStatus){

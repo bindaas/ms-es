@@ -47,7 +47,7 @@ public class OrderController {
     }
 
     
-    @RequestMapping("/changeOrderNameCommand")
+    @RequestMapping(value = "/changeOrderNameCommand" , method = RequestMethod.POST)
     public String updateOrderCommand(@RequestParam(value="newName") String newName , @RequestParam(value="orderId", defaultValue="any orderId") String orderId)  throws Exception{
 		System.out.println("updateOrderCommand>>>>");
     		List<PersistedEvent> persistedEvents = persistedEventRepository.findByObjectId(orderId);
@@ -63,7 +63,7 @@ public class OrderController {
         return orderId.toString();
     }
 
-    @RequestMapping("/cancelOrderCommand")
+    @RequestMapping(value="/cancelOrderCommand" , method = RequestMethod.POST)
     public String cancelOrderCommand(@RequestParam(value="orderId") String orderId)  throws Exception{
 		System.out.println("cancelOrderCommand>>>>");
     		List<PersistedEvent> persistedEvents = persistedEventRepository.findByObjectId(orderId);
@@ -79,7 +79,7 @@ public class OrderController {
         return orderId.toString();
     }
 
-    @RequestMapping("/uncancelOrderCommand")
+    @RequestMapping(value = "/uncancelOrderCommand" , method = RequestMethod.POST)
     public String uncancelOrderCommand(@RequestParam(value="orderId") String orderId)  throws Exception{
 		System.out.println("cancelOrderCommand>>>>");
     		List<PersistedEvent> persistedEvents = persistedEventRepository.findByObjectId(orderId);
@@ -96,7 +96,7 @@ public class OrderController {
     }
     
     
-    @RequestMapping("/orderSnapshot")
+    @RequestMapping(value = "/orderSnapshot" , method = RequestMethod.POST)
     public String orderSnapshot( @RequestParam(value="orderId") String orderId)  throws Exception{
 		System.out.println("orderSnapshot>>>>");
     		List<PersistedEvent> persistedEvents = persistedEventRepository.findByObjectId(orderId);
