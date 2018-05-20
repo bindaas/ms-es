@@ -1,17 +1,18 @@
 # ms-es
 
-##Pre-requisites:
+## Pre-requisites:
 Java
 Gradle
 
 
-##Commands:
-gradle assemble
-java -jar build/libs/gs-rest-service-0.1.0.jar
-groovy src/test/groovy/test_all.groovy
+## Commands:
+* gradle assemble
+* java -jar build/libs/gs-rest-service-0.1.0.jar
+* groovy src/test/groovy/test_all.groovy
 
 # About
 This program exhibits some of the key principles behind EventSourcing
+
 `Command` -> A Command sent to an Aggregate to **take some action**
 `Events` -> These are the **business events** that are emitted by the Aggregate. These events are persisted in the Database in a chronological order.
 `Aggregate` -> The **current state** of the domain object. This is put together from the event stream.
